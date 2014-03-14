@@ -39,14 +39,18 @@ class Rack::Turnout
   end
 
   def ip_allowed?
-    begin
-      ip = IPAddr.new(request.ip.to_s)
-    rescue ArgumentError
-      return false
-    end
-
+    ip = get_source_ip
     (settings['allowed_ips'] || []).any? do |allowed_ip|
       IPAddr.new(allowed_ip).include? ip
+    end
+  end
+  
+  def get_source_ip
+    begin
+      ipaddr = settings['use_elb'] ? request.headers[:X-Forwarded-For] : request.ip.to_s
+      return IPAddr.new(ipaddr)
+    rescue ArgumentError
+      return false
     end
   end
 
