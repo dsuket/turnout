@@ -107,3 +107,5 @@ Example maintenance.yml File
     allowed_ips:
     - 127.0.0.1
     - 192.168.0.0/24
+   use_elb: true
+   
